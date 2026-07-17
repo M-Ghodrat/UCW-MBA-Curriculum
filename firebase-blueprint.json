@@ -1,0 +1,248 @@
+{
+  "entities": {
+    "Program": {
+      "title": "Program",
+      "description": "Overall program description and details",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Program Name"
+        },
+        "description": {
+          "type": "string",
+          "description": "Overall program description"
+        },
+        "objectives": {
+          "type": "string",
+          "description": "Program learning objectives and goals"
+        }
+      },
+      "required": ["id", "name", "description"]
+    },
+    "PLO": {
+      "title": "PLO",
+      "description": "Program Learning Outcome",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "PLO identifier, e.g., PLO1"
+        },
+        "verb": {
+          "type": "string",
+          "description": "Single action verb from Bloom's Taxonomy"
+        },
+        "text": {
+          "type": "string",
+          "description": "The full PLO description text"
+        },
+        "bloomLevel": {
+          "type": "string",
+          "description": "Bloom's Taxonomy category (e.g., Remember, Understand, Apply, Analyze, Evaluate, Create)"
+        },
+        "order": {
+          "type": "number",
+          "description": "Display order"
+        }
+      },
+      "required": ["id", "verb", "text", "bloomLevel", "order"]
+    },
+    "Course": {
+      "title": "Course",
+      "description": "An MBA course",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Course identifier, e.g., BUSI601"
+        },
+        "code": {
+          "type": "string",
+          "description": "Course code, e.g., BUSI 601"
+        },
+        "name": {
+          "type": "string",
+          "description": "Course title"
+        },
+        "description": {
+          "type": "string",
+          "description": "Course syllabus description"
+        },
+        "term": {
+          "type": "number",
+          "description": "Term/Tier number (1-4)"
+        },
+        "clos": {
+          "type": "array",
+          "description": "List of Course Learning Outcomes",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "verb": { "type": "string" },
+              "text": { "type": "string" }
+            },
+            "required": ["id", "verb", "text"]
+          }
+        }
+      },
+      "required": ["id", "code", "name", "description", "term", "clos"]
+    },
+    "Mapping": {
+      "title": "Mapping",
+      "description": "CLO to PLO mappings",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "mappings": {
+          "type": "object",
+          "description": "Nested mappings object. Keys are format 'courseId_cloId', values are arrays of PLO IDs"
+        }
+      },
+      "required": ["id", "mappings"]
+    },
+    "Setting": {
+      "title": "Setting",
+      "description": "Global thresholds and variables",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "thresholdTerm": {
+          "type": "number",
+          "description": "Minimum count of CLO-to-PLO mappings in a term for full PLO coverage"
+        },
+        "thresholdProgram": {
+          "type": "number",
+          "description": "Minimum total CLO-to-PLO mappings across the program for overall coverage"
+        }
+      },
+      "required": ["id", "thresholdTerm", "thresholdProgram"]
+    },
+    "Assignment": {
+      "title": "Assignment",
+      "description": "Assignments and assessment mapping in a course",
+      "type": "object",
+      "properties": {
+        "courseId": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "weight": { "type": "number" },
+              "clos": { "type": "array", "items": { "type": "string" } },
+              "plos": { "type": "array", "items": { "type": "string" } }
+            },
+            "required": ["id", "name", "weight", "clos", "plos"]
+          }
+        }
+      },
+      "required": ["courseId", "items"]
+    },
+    "Student": {
+      "title": "Student",
+      "description": "A student profile with proficiency metrics",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string"
+        },
+        "grades": {
+          "type": "object",
+          "description": "Course-wise grades and scores on assignments. Keys are courseId, values are objects mapping assignmentId to achieved score (%)"
+        }
+      },
+      "required": ["id", "name", "email", "grades"]
+    },
+    "FacultyComment": {
+      "title": "FacultyComment",
+      "description": "Faculty feedback comment on PLO descriptions, dimensions, or metrics",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "ploId": {
+          "type": "string",
+          "description": "ID of the target PLO"
+        },
+        "targetType": {
+          "type": "string",
+          "enum": ["description", "dimension", "metric"]
+        },
+        "dimensionId": {
+          "type": "string"
+        },
+        "metricType": {
+          "type": "string"
+        },
+        "commentText": {
+          "type": "string"
+        },
+        "authorName": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "ploId", "targetType", "commentText", "authorName", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/program/info": {
+      "schema": "Program",
+      "description": "Global MBA program information"
+    },
+    "/plos/{ploId}": {
+      "schema": "PLO",
+      "description": "Program Learning Outcomes"
+    },
+    "/courses/{courseId}": {
+      "schema": "Course",
+      "description": "MBA courses"
+    },
+    "/mappings/active": {
+      "schema": "Mapping",
+      "description": "Active mappings of CLO to PLO"
+    },
+    "/settings/general": {
+      "schema": "Setting",
+      "description": "User thresholds and general configurations"
+    },
+    "/assignments/{courseId}": {
+      "schema": "Assignment",
+      "description": "Assignments and their CLO/PLO coverages for each course"
+    },
+    "/students/{studentId}": {
+      "schema": "Student",
+      "description": "Individual student learning outcome proficiency records"
+    },
+    "/comments/{commentId}": {
+      "schema": "FacultyComment",
+      "description": "Faculty feedback comments on PLOs"
+    }
+  }
+}

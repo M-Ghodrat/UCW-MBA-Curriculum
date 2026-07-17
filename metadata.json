@@ -1,0 +1,6 @@
+{
+  "name": "MBA Curriculum Mapper",
+  "description": "An educational mapping tool for UCW MBA courses, PLOs, CLOs, term coverages, visual decision trees, assessment mapping, and student learning outcome proficiency metrics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

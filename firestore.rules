@@ -1,0 +1,134 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 1. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 2. Global Helper Functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isServerTimestamp(val) {
+      return val == request.time;
+    }
+
+    // 3. Entity-Specific Validation Helpers
+    function isValidPLO(data) {
+      return data.id is string && data.id.size() <= 32
+        && data.verb is string && data.verb.size() <= 64
+        && data.text is string && data.text.size() <= 1000
+        && data.bloomLevel is string && data.bloomLevel.size() <= 32
+        && data.order is number;
+    }
+
+    function isValidCourse(data) {
+      return data.id is string && data.id.size() <= 32
+        && data.code is string && data.code.size() <= 32
+        && data.name is string && data.name.size() <= 256
+        && data.description is string && data.description.size() <= 5000
+        && data.term is number && data.term >= 1 && data.term <= 12
+        && data.clos is list;
+    }
+
+    function isValidMapping(data) {
+      return data.id is string && data.id.size() <= 32
+        && data.mappings is map;
+    }
+
+    function isValidSetting(data) {
+      return data.id is string && data.id.size() <= 32
+        && data.thresholdTerm is number && data.thresholdTerm >= 1 && data.thresholdTerm <= 10
+        && data.thresholdProgram is number && data.thresholdProgram >= 1 && data.thresholdProgram <= 20;
+    }
+
+    function isValidAssignment(data) {
+      return data.courseId is string && data.courseId.size() <= 32
+        && data.items is list;
+    }
+
+    function isValidStudent(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.name is string && data.name.size() <= 256
+        && data.email is string && data.email.size() <= 256
+        && data.grades is map;
+    }
+
+    function isValidFacultyComment(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.ploId is string && data.ploId.size() <= 128
+        && data.targetType is string && data.targetType.size() <= 32
+        && data.commentText is string && data.commentText.size() <= 2000
+        && data.authorName is string && data.authorName.size() <= 256
+        && data.createdAt is string && data.createdAt.size() <= 128;
+    }
+
+    // 4. Matches and Collection Rules
+    
+    // Program collection
+    match /program/info {
+      allow read: if true;
+      allow write, update: if isSignedIn();
+    }
+
+    // PLOs collection
+    match /plos/{ploId} {
+      allow read: if true;
+      allow create, delete: if isSignedIn();
+      allow update: if isSignedIn() || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['upvotes']));
+    }
+
+    // Courses collection
+    match /courses/{courseId} {
+      allow read: if true;
+      allow create, update, delete: if isSignedIn();
+    }
+
+    // Mappings collection
+    match /mappings/{mappingId} {
+      allow read: if true;
+      allow create, update, delete: if isSignedIn();
+    }
+
+    // Settings collection
+    match /settings/{settingId} {
+      allow read: if true;
+      allow create, update, delete: if isSignedIn();
+    }
+
+    // Assignments collection
+    match /assignments/{courseId} {
+      allow read: if true;
+      allow create, update, delete: if isSignedIn();
+    }
+
+    // Students collection (restricted read/write)
+    match /students/{studentId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isSignedIn();
+    }
+
+    // Comments collection (faculty feedback)
+    match /comments/{commentId} {
+      allow read: if true;
+      allow create: if isValidId(commentId) && isValidFacultyComment(incoming());
+      allow update: if isSignedIn() || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['upvotes']));
+      allow delete: if isSignedIn();
+    }
+  }
+}
