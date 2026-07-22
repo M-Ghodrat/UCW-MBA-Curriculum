@@ -64,6 +64,24 @@ import {
   Lock
 } from 'lucide-react';
 
+const cleanUndefined = (obj: any): any => {
+  if (obj === undefined) return null;
+  if (obj === null) return null;
+  if (Array.isArray(obj)) {
+    return obj.map(item => cleanUndefined(item));
+  }
+  if (typeof obj === 'object') {
+    const cleaned: any = {};
+    for (const key of Object.keys(obj)) {
+      if (obj[key] !== undefined) {
+        cleaned[key] = cleanUndefined(obj[key]);
+      }
+    }
+    return cleaned;
+  }
+  return obj;
+};
+
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>('program');
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
@@ -113,19 +131,18 @@ export default function App() {
   const [students, setStudents] = useState<Student[]>([]);
   const [comments, setComments] = useState<FacultyComment[]>([]);
 
-  // Unique voter identifier for persistent anonymous upvotes
-  const getVoterId = () => {
-    let id = localStorage.getItem('voter_id');
+  // Unique voter identifier state that regenerates on each new tab/session or sandbox entry
+  const [voterId, setVoterId] = useState<string>(() => {
+    let id = sessionStorage.getItem('voter_id');
     if (!id) {
       id = `voter_${Math.random().toString(36).substring(2, 11)}`;
-      localStorage.setItem('voter_id', id);
+      sessionStorage.setItem('voter_id', id);
     }
     return id;
-  };
+  });
 
   // Upvote a PLO
   const handleUpvotePlo = async (ploId: string) => {
-    const voterId = getVoterId();
     const updatedPlos = plos.map(plo => {
       if (plo.id === ploId) {
         const upvotes = plo.upvotes || [];
@@ -151,7 +168,6 @@ export default function App() {
 
   // Upvote a comment
   const handleUpvoteComment = async (commentId: string) => {
-    const voterId = getVoterId();
     const targetComment = comments.find(c => c.id === commentId);
     if (!targetComment) return;
 
@@ -209,8 +225,23 @@ export default function App() {
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
       if (user) {
-        setUserRole('admin');
-        localStorage.setItem('user_role', 'admin');
+        const isAnonymous = user.isAnonymous;
+        const storedRole = localStorage.getItem('user_role');
+        
+        if (!isAnonymous) {
+          // Google provider auth -> promote to admin
+          setUserRole('admin');
+          localStorage.setItem('user_role', 'admin');
+        } else if (storedRole === 'admin') {
+          setUserRole('admin');
+        } else if (storedRole === 'faculty_guest') {
+          setUserRole('faculty_guest');
+        }
+      } else {
+        const storedRole = localStorage.getItem('user_role');
+        if (storedRole === 'admin') {
+          signInAnonymously(auth).catch(e => console.warn('Silent auto-auth fallback failed:', e));
+        }
       }
     });
 
@@ -505,6 +536,7 @@ export default function App() {
     localStorage.removeItem('user_role');
     localStorage.removeItem('is_sandbox_mode');
     setIsSandboxMode(false);
+    sessionStorage.removeItem('voter_id');
   };
 
   const handleExitGuestSession = () => {
@@ -512,6 +544,7 @@ export default function App() {
     localStorage.removeItem('user_role');
     localStorage.removeItem('is_sandbox_mode');
     setIsSandboxMode(false);
+    sessionStorage.removeItem('voter_id');
   };
 
   // Firestore update wrappers with standardized custom error handlers
@@ -532,12 +565,12 @@ export default function App() {
       const deletedIds = existingIds.filter(id => !updatedIds.includes(id));
 
       for (const id of deletedIds) {
-        // Standard delete of document is omitted to be simple, or done directly:
-        // await deleteDoc(doc(db, 'plos', id));
+        await deleteDoc(doc(db, 'plos', id));
       }
 
       for (const plo of updatedPlos) {
-        await setDoc(doc(db, 'plos', plo.id), plo);
+        const cleaned = cleanUndefined(plo);
+        await setDoc(doc(db, 'plos', plo.id), cleaned);
       }
       setPlos(updatedPlos);
     } catch (error) {
@@ -643,6 +676,10 @@ export default function App() {
                         setUserRole('faculty_guest');
                         localStorage.setItem('user_role', 'faculty_guest');
                         setIsSandboxMode(true);
+                        // Generate a fresh unique voter ID so likes can accumulate across guest sandbox entries
+                        const freshId = `voter_${Math.random().toString(36).substring(2, 11)}`;
+                        sessionStorage.setItem('voter_id', freshId);
+                        setVoterId(freshId);
                       }}
                       className="mt-3 px-4 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-sm transition duration-150 flex items-center gap-1.5"
                     >
@@ -665,13 +702,29 @@ export default function App() {
                     </p>
                     
                     <form 
-                      onSubmit={(e) => {
+                      onSubmit={async (e) => {
                         e.preventDefault();
                         setPasscodeError('');
                         if (adminPasscode.trim().toLowerCase() === 'ucw-admin' || adminPasscode.trim().toLowerCase() === 'admin') {
-                          setUserRole('admin');
-                          localStorage.setItem('user_role', 'admin');
-                          setIsSandboxMode(false);
+                          try {
+                            await signInAnonymously(auth);
+                            setUserRole('admin');
+                            localStorage.setItem('user_role', 'admin');
+                            setIsSandboxMode(false);
+                            // Generate a fresh unique voter ID so likes can accumulate across admin sandbox entries
+                            const freshId = `voter_${Math.random().toString(36).substring(2, 11)}`;
+                            sessionStorage.setItem('voter_id', freshId);
+                            setVoterId(freshId);
+                          } catch (authErr: any) {
+                            console.error('Passcode login auto anonymous auth failed:', authErr);
+                            // Fallback so the app doesn't block them entirely if anonymous auth is disabled
+                            setUserRole('admin');
+                            localStorage.setItem('user_role', 'admin');
+                            setIsSandboxMode(false);
+                            const freshId = `voter_${Math.random().toString(36).substring(2, 11)}`;
+                            sessionStorage.setItem('voter_id', freshId);
+                            setVoterId(freshId);
+                          }
                         } else {
                           setPasscodeError('Invalid administrator passcode. Please try again.');
                         }
@@ -697,32 +750,6 @@ export default function App() {
                       {passcodeError && (
                         <p className="text-[10px] text-rose-600 font-bold">{passcodeError}</p>
                       )}
-                      
-                      <div className="flex items-center gap-2 py-1">
-                        <div className="flex-1 h-[1px] bg-slate-200"></div>
-                        <span className="text-[9px] text-slate-400 font-mono font-bold uppercase">Or Log In Via</span>
-                        <div className="flex-1 h-[1px] bg-slate-200"></div>
-                      </div>
-
-                      <div className="flex flex-col sm:flex-row gap-2">
-                        <button
-                          type="button"
-                          onClick={handleGoogleSignIn}
-                          className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold transition shadow-sm"
-                        >
-                          <LogIn size={11} /> Google Account
-                        </button>
-                        <button
-                          type="button"
-                          onClick={handleSandboxSignIn}
-                          className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl text-xs font-bold transition"
-                        >
-                          Anonymous Sandbox
-                        </button>
-                      </div>
-                      <p className="text-[10px] text-slate-400 font-mono mt-2">
-                        Tip: Enter passcode <span className="font-bold text-slate-600">UCW-Admin</span> for instant preview administrator access.
-                      </p>
                     </form>
                   </div>
                 </div>
@@ -1157,6 +1184,7 @@ export default function App() {
                     onUpvotePlo={handleUpvotePlo}
                     onUpvoteComment={handleUpvoteComment}
                     userRole={userRole}
+                    voterId={voterId}
                   />
                 )}
 

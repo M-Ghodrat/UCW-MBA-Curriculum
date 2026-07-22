@@ -17,6 +17,7 @@ export interface PLO {
   shortNotation?: string; // e.g., "Strategic Responses"
   dimensions?: PLODimension[];
   upvotes?: string[];
+  highlightedVerbs?: string[];
 }
 
 export interface CLO {
