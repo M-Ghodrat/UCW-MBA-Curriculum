@@ -250,34 +250,7 @@ export default function App() {
     };
   }, []);
 
-  // Temporary PLO Migration
-  useEffect(() => {
-    const migratePlos = async () => {
-      if (!currentUser) return;
-      const migrateFlag = localStorage.getItem('plos_migrated_v4');
-      if (migrateFlag) return;
-      
-      try {
-        console.log('Migrating PLOs to match the new definitions...');
-        // Clean up old ones just in case
-        for (let i = 1; i <= 10; i++) {
-          await deleteDoc(doc(db, 'plos', `PLO${i}`));
-        }
-        for (const plo of INITIAL_PLOS) {
-          await setDoc(doc(db, 'plos', plo.id), plo);
-        }
-        localStorage.setItem('plos_migrated_v4', 'true');
-        console.log('PLOs migrated successfully.');
-      } catch (err) {
-        console.error('Failed to migrate PLOs:', err);
-      }
-    };
-    
-    if (currentUser) {
-      // give time for auth to settle and db connection to establish
-      setTimeout(migratePlos, 2000);
-    }
-  }, [currentUser]);
+
 
   // Real-time Database Subscriptions with Resilient Local Fallbacks
   useEffect(() => {
