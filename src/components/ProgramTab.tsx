@@ -1582,7 +1582,7 @@ export default function ProgramTab({
                               <ThumbsUp size={10} className={(c.upvotes || []).includes(voterId) ? 'fill-amber-600 text-amber-600' : ''} />
                               <span>{(c.upvotes || []).length}</span>
                             </button>
-                            {onDeleteComment && (
+                            {onDeleteComment && userRole === 'admin' && (
                               <button
                                 type="button"
                                 onClick={() => setCommentToDelete(c)}

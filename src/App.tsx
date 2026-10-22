@@ -382,6 +382,10 @@ export default function App() {
 
   // Delete a FacultyComment from Firestore
   const handleDeleteComment = async (commentId: string) => {
+    if (userRole !== 'admin') {
+      console.warn('Delete comment blocked: Only administrators can delete comments.');
+      return;
+    }
     try {
       setComments(prev => prev.filter(c => c.id !== commentId));
       await deleteDoc(doc(db, 'comments', commentId));
@@ -1772,7 +1776,7 @@ export default function App() {
                           sessionStorage.setItem('voter_id', freshId);
                           setVoterId(freshId);
                         } else {
-                          setPasscodeError('Invalid administrator passcode. (Default: Admin-UCW)');
+                          setPasscodeError('Invalid administrator passcode.');
                         }
                       }}
                       className="space-y-2 pt-2"
@@ -1780,7 +1784,7 @@ export default function App() {
                       <div className="flex gap-2">
                         <input
                           type="password"
-                          placeholder="Passcode (Admin-UCW)"
+                          placeholder="Enter administrator passcode"
                           value={adminPasscode}
                           onChange={(e) => setAdminPasscode(e.target.value)}
                           className="flex-1 px-3 py-1.5 border border-slate-200 rounded-xl text-xs placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
