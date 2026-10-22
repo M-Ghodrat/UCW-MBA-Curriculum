@@ -6,15 +6,23 @@ interface VisualMappingTabProps {
   courses: Course[];
   plos: PLO[];
   mappings: { [key: string]: string[] }; // courseId_cloId -> PLO IDs
+  termsCount?: number;
+  termLabel?: string;
 }
 
 export default function VisualMappingTab({
   courses,
   plos,
-  mappings
+  mappings,
+  termsCount = 4,
+  termLabel = 'Term'
 }: VisualMappingTabProps) {
   const [selectedPloId, setSelectedPloId] = useState<string>('PLO1');
   const [hoveredCourseId, setHoveredCourseId] = useState<string | null>(null);
+
+  const activePloId = plos.some(p => p.id === selectedPloId) 
+    ? selectedPloId 
+    : (plos[0]?.id || '');
 
   // Check if a course is mapped to the selected PLO
   const isCourseMappedToSelectedPlo = (courseId: string): boolean => {
@@ -24,11 +32,13 @@ export default function VisualMappingTab({
     return course.clos.some(clo => {
       const key = `${courseId}_${clo.id}`;
       const mappedPlos = mappings[key] || [];
-      return mappedPlos.includes(selectedPloId);
+      return mappedPlos.includes(activePloId);
     });
   };
 
-  const selectedPlo = plos.find(p => p.id === selectedPloId);
+  const selectedPlo = plos.find(p => p.id === activePloId);
+
+  const termList = Array.from({ length: termsCount }, (_, i) => i + 1);
 
   return (
     <div id="visual-mapping-root" className="space-y-6">
@@ -47,7 +57,7 @@ export default function VisualMappingTab({
         <div className="shrink-0 flex items-center gap-3">
           <label className="text-xs font-semibold text-slate-500 uppercase font-mono">Trace PLO:</label>
           <select
-            value={selectedPloId}
+            value={activePloId}
             onChange={(e) => setSelectedPloId(e.target.value)}
             className="p-3 border border-slate-200 rounded-xl bg-slate-50 text-slate-700 text-sm font-semibold focus:ring-1 focus:ring-blue-500 focus:outline-none focus:border-blue-500 max-w-[280px] md:max-w-[400px]"
           >
@@ -76,30 +86,24 @@ export default function VisualMappingTab({
       )}
 
       {/* Decision tree visualization stage */}
-      <div className="max-w-5xl mx-auto w-full">
-        <div id="visual-tree-canvas" className="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
+      <div className="max-w-7xl mx-auto w-full">
+        <div id="visual-tree-canvas" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 relative">
           {/* Connection pathways - rendered beautifully via flex & custom cards */}
-          {[1, 2, 3, 4].map((termNum) => {
+          {termList.map((termNum) => {
             const termCourses = courses.filter(c => c.term === termNum);
-
-            let termTitle = '';
-            let termSubtitle = '';
-            if (termNum === 1) { termTitle = 'Term 1'; termSubtitle = 'Analytical Foundations'; }
-            else if (termNum === 2) { termTitle = 'Term 2'; termSubtitle = 'Management Principles'; }
-            else if (termNum === 3) { termTitle = 'Term 3'; termSubtitle = 'Strategic Applications'; }
-            else if (termNum === 4) { termTitle = 'Term 4'; termSubtitle = 'Integration & Capstone'; }
+            const termTitle = `${termLabel} ${termNum}`;
 
             return (
               <div
                 key={termNum}
                 id={`term-column-${termNum}`}
-                className="bg-slate-50/50 border border-slate-100 rounded-2xl p-4 flex flex-col md:col-span-1"
+                className="bg-slate-50/50 border border-slate-100 rounded-2xl p-4 flex flex-col"
               >
                 {/* Term Column Header */}
                 <div className="flex items-center justify-between border-b border-slate-200 pb-2 mb-3">
                   <div>
                     <h4 className="text-xs font-bold text-slate-700">{termTitle}</h4>
-                    <p className="text-[9px] text-slate-400 font-medium leading-none mt-0.5">{termSubtitle}</p>
+                    <p className="text-[9px] text-slate-400 font-medium leading-none mt-0.5">{termCourses.length} Course{termCourses.length !== 1 ? 's' : ''}</p>
                   </div>
                 </div>
 
@@ -110,7 +114,7 @@ export default function VisualMappingTab({
 
                     const coveredClos = course.clos.map((clo, idx) => ({ ...clo, displayId: `CLO${idx + 1}` })).filter(clo => {
                       const key = `${course.id}_${clo.id}`;
-                      return mappings[key]?.includes(selectedPloId);
+                      return mappings[key]?.includes(activePloId);
                     });
 
                     const coveredCount = coveredClos.length;
@@ -222,7 +226,7 @@ export default function VisualMappingTab({
                               </div>
                               {course.clos.map((clo, idx) => {
                                 const key = `${course.id}_${clo.id}`;
-                                const isCloMapped = mappings[key]?.includes(selectedPloId);
+                                const isCloMapped = mappings[key]?.includes(activePloId);
 
                                 return (
                                   <div key={clo.id} className="flex gap-1 items-start text-[8.5px]">

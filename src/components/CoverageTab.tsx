@@ -7,28 +7,38 @@ interface CoverageTabProps {
   plos: PLO[];
   mappings: { [key: string]: string[] }; // courseId_cloId -> PLO IDs
   thresholdTerm: number;
+  termsCount?: number;
+  termLabel?: string;
 }
 
 export default function CoverageTab({
   courses,
   plos,
   mappings,
-  thresholdTerm
+  thresholdTerm,
+  termsCount = 4,
+  termLabel = 'Term'
 }: CoverageTabProps) {
   const [selectedPloId, setSelectedPloId] = useState<string>('PLO1');
 
-  const selectedPlo = plos.find(p => p.id === selectedPloId);
+  const activePloId = plos.some(p => p.id === selectedPloId) 
+    ? selectedPloId 
+    : (plos[0]?.id || '');
+
+  const selectedPlo = plos.find(p => p.id === activePloId);
 
   // Get CLOs covering selected PLO in a course
   const getCoveringClos = (course: Course): { id: string; verb: string; text: string; displayId: string }[] => {
     return course.clos.map((clo, idx) => ({ ...clo, displayId: `CLO${idx + 1}` })).filter(clo => {
       const key = `${course.id}_${clo.id}`;
-      return (mappings[key] || []).includes(selectedPloId);
+      return (mappings[key] || []).includes(activePloId);
     });
   };
 
+  const termList = Array.from({ length: termsCount }, (_, i) => i + 1);
+
   // Group course analysis by Term
-  const termSummary = [1, 2, 3, 4].map(termNum => {
+  const termSummary = termList.map(termNum => {
     const termCourses = courses.filter(c => c.term === termNum);
     let mappingCount = 0;
     
@@ -66,7 +76,7 @@ export default function CoverageTab({
         <div className="shrink-0 flex items-center gap-3">
           <label className="text-xs font-semibold text-slate-500 uppercase font-mono">Select PLO:</label>
           <select
-            value={selectedPloId}
+            value={activePloId}
             onChange={(e) => setSelectedPloId(e.target.value)}
             className="p-3 border border-slate-200 rounded-xl bg-slate-50 text-slate-700 text-sm font-semibold focus:ring-1 focus:ring-blue-500 focus:outline-none focus:border-blue-500"
           >
@@ -99,7 +109,7 @@ export default function CoverageTab({
             <span className="text-xs font-mono font-semibold text-slate-400 uppercase">Program Total Coverage</span>
             <div className="flex items-baseline gap-1.5">
               <span className="text-3xl font-extrabold text-slate-800 font-mono">
-                {Object.values(mappings).filter(ploIds => ploIds.includes(selectedPloId)).length}
+                {Object.values(mappings).filter(ploIds => ploIds.includes(activePloId)).length}
               </span>
               <span className="text-xs text-slate-400 font-semibold uppercase">CLO Mappings</span>
             </div>
@@ -110,11 +120,7 @@ export default function CoverageTab({
       {/* Term-wise Detailed Coverage Tables */}
       <div id="term-coverage-tables" className="space-y-8">
         {termSummary.map(({ termNum, analysis, totalCLOMappings }) => {
-          let termTitle = '';
-          if (termNum === 1) termTitle = 'Term 1: Analytical Foundations';
-          else if (termNum === 2) termTitle = 'Term 2: Management Principles';
-          else if (termNum === 3) termTitle = 'Term 3: Strategic Applications';
-          else if (termNum === 4) termTitle = 'Term 4: Integration & Capstone';
+          const termTitle = `${termLabel} ${termNum}`;
 
           // Determine status color based on threshold
           let statusBg = 'bg-rose-50 text-rose-700 border-rose-100';

@@ -1,3 +1,16 @@
+export interface AcademicProgram {
+  id: string; // e.g., "mba", "bcom"
+  code: string; // e.g., "MBA", "BCom"
+  name: string; // e.g., "Master of Business Administration (MBA)"
+  degreeLevel: 'Graduate' | 'Undergraduate' | 'Certificate';
+  accreditation?: string;
+  description: string;
+  objectives: string;
+  termsCount: number; // e.g., 4 for MBA, 8 for BCom
+  termLabel: string; // e.g., "Term" or "Semester" or "Quarter"
+  createdAt?: string;
+}
+
 export interface PLODimension {
   id: string; // e.g., "1.1", "1.2"
   name: string;
@@ -10,13 +23,13 @@ export interface PLODimension {
 
 export interface PLO {
   id: string; // e.g., "PLO1"
+  programId?: string; // e.g., "mba", "bcom"
   verb: string; // e.g., "Define"
   text: string;
   bloomLevel: string; // e.g., "Remember", "Understand", "Apply", "Analyze", "Evaluate", "Create"
   order: number;
   shortNotation?: string; // e.g., "Strategic Responses"
   dimensions?: PLODimension[];
-  upvotes?: string[];
   highlightedVerbs?: string[];
 }
 
@@ -61,25 +74,38 @@ export interface CourseOutlineData {
 
 export interface Course {
   id: string; // e.g., "BUSI601"
+  programId?: string; // e.g., "mba", "bcom"
   code: string; // e.g., "BUSI 601"
   name: string;
   description: string;
-  term: number; // Term/Tier 1-4
+  term: number; // Term 1-12
   clos: CLO[];
   outline?: CourseOutlineData;
 }
 
 export interface Mapping {
-  id: string; // "active"
+  id: string; // "active" or "bcom_active"
+  programId?: string;
   mappings: {
     [key: string]: string[]; // key: "courseId_cloId", value: Array of PLO IDs (e.g. ["PLO1", "PLO2"])
   };
 }
 
+export interface FeedbackLevelSettings {
+  plo: boolean;       // PLO statement & verb level
+  dimension: boolean; // Dimension level
+  rubric: boolean;    // Rubric criteria (Exceeds/Meets/DoesNotMeet) level
+}
+
 export interface Setting {
-  id: string; // "general"
+  id: string; // "mba_general" or "bcom_general"
+  programId?: string;
   thresholdTerm: number;
   thresholdProgram: number;
+  facultySandboxEnabled?: boolean;
+  feedbackLevels?: FeedbackLevelSettings;
+  activeRoundId?: string;
+  activeRoundName?: string;
 }
 
 export interface Assignment {
@@ -97,6 +123,7 @@ export interface CourseAssignments {
 
 export interface Student {
   id: string;
+  programId?: string;
   name: string;
   email: string;
   avatar: string;
@@ -109,6 +136,9 @@ export interface Student {
 
 export interface FacultyComment {
   id: string;
+  programId?: string;
+  roundId?: string; // e.g., "mba_round_july_2026"
+  roundName?: string; // e.g., "July 2026"
   ploId: string;
   targetType: 'description' | 'dimension' | 'metric';
   dimensionId?: string; // only if targetType is 'dimension' or 'metric'
@@ -118,3 +148,15 @@ export interface FacultyComment {
   createdAt: string; // ISO string
   upvotes?: string[];
 }
+
+export interface FeedbackRound {
+  id: string; // e.g., "mba_round_july_2026"
+  programId: string; // e.g., "mba", "bcom"
+  name: string; // e.g., "July 2026"
+  status: 'active' | 'archived';
+  createdAt: string;
+  archivedAt?: string;
+  plosSnapshot: PLO[]; // Frozen snapshot of PLOs associated with this comment round
+}
+
+

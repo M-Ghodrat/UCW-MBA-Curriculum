@@ -80,55 +80,74 @@ service cloud.firestore {
 
     // 4. Matches and Collection Rules
     
-    // Program collection
+    // Program collections
+    match /programs/{programId} {
+      allow read: if true;
+      allow create, update, delete: if isSignedIn() || isValidId(programId);
+    }
+
     match /program/info {
       allow read: if true;
-      allow write, update: if isSignedIn();
+      allow write, update, delete: if true;
     }
 
     // PLOs collection
     match /plos/{ploId} {
       allow read: if true;
-      allow create, delete: if isSignedIn();
-      allow update: if isSignedIn() || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['upvotes']));
+      allow create, update, delete: if isSignedIn() || isValidId(ploId);
     }
 
     // Courses collection
     match /courses/{courseId} {
       allow read: if true;
-      allow create, update, delete: if isSignedIn();
+      allow create, update, delete: if isSignedIn() || isValidId(courseId);
     }
 
     // Mappings collection
     match /mappings/{mappingId} {
       allow read: if true;
-      allow create, update, delete: if isSignedIn();
+      allow create, update, delete: if isSignedIn() || isValidId(mappingId);
     }
 
     // Settings collection
     match /settings/{settingId} {
       allow read: if true;
-      allow create, update, delete: if isSignedIn();
+      allow create, update, delete: if isSignedIn() || isValidId(settingId);
     }
 
     // Assignments collection
     match /assignments/{courseId} {
       allow read: if true;
-      allow create, update, delete: if isSignedIn();
+      allow create, update, delete: if isSignedIn() || isValidId(courseId);
     }
 
-    // Students collection (restricted read/write)
+    // Students collection
     match /students/{studentId} {
-      allow read: if isSignedIn();
-      allow create, update, delete: if isSignedIn();
+      allow read: if true;
+      allow create, update, delete: if isSignedIn() || isValidId(studentId);
     }
 
     // Comments collection (faculty feedback)
     match /comments/{commentId} {
       allow read: if true;
-      allow create: if isValidId(commentId) && isValidFacultyComment(incoming());
-      allow update: if isSignedIn() || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['upvotes']));
-      allow delete: if isSignedIn();
+      allow create, update, delete: if isSignedIn() || isValidId(commentId);
+    }
+
+    // Feedback Rounds collection (versioned PLO & comment rounds)
+    match /feedback_rounds/{roundId} {
+      allow read: if true;
+      allow create, update, delete: if isSignedIn() || isValidId(roundId);
+    }
+
+    // Backups collection
+    match /backups/{backupId} {
+      allow read: if true;
+      allow create, update, delete: if isSignedIn() || isValidId(backupId);
+    }
+
+    match /program_snapshots/{snapshotId} {
+      allow read: if true;
+      allow create, update, delete: if isSignedIn() || isValidId(snapshotId);
     }
   }
 }

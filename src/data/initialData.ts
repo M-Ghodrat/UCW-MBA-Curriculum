@@ -1,8 +1,36 @@
-import { PLO, Course, Setting, Student, Assignment } from '../types';
+import { PLO, Course, Setting, Student, Assignment, AcademicProgram, FacultyComment, FeedbackRound } from '../types';
+
+export const INITIAL_PROGRAMS: AcademicProgram[] = [
+  {
+    id: 'mba',
+    code: 'MBA',
+    name: 'Master of Business Administration (MBA)',
+    degreeLevel: 'Graduate',
+    accreditation: 'ACBSP Accredited',
+    description: 'The ACBSP-accredited Master of Business Administration (MBA) program from University Canada West (UCW) will prepare you for leadership on the global stage. You will learn how to take challenging situations in stride, apply pragmatic solutions to problems and ultimately drive the success of an organization.',
+    objectives: 'The program develops graduates who can formulate sustainable business strategy, build and direct diverse business teams, conduct analytics-driven business evaluation, and integrate digital technology solutions seamlessly into daily corporate operations.',
+    termsCount: 4,
+    termLabel: 'Term',
+    createdAt: '2026-01-01T00:00:00.000Z'
+  },
+  {
+    id: 'bcom',
+    code: 'BCom',
+    name: 'Bachelor of Commerce (BCom)',
+    degreeLevel: 'Undergraduate',
+    accreditation: 'ACBSP Accredited',
+    description: 'The Bachelor of Commerce (BCom) program from University Canada West (UCW) provides a comprehensive business education grounded in critical thinking, analytical decision-making, and ethical leadership.',
+    objectives: '1. Acquire core foundational knowledge in commercial business disciplines.\n2. Apply quantitative and qualitative analytical tools to solve practical business problems.\n3. Demonstrate professional communication, teamwork, and ethical awareness across diverse organizations.',
+    termsCount: 8,
+    termLabel: 'Term',
+    createdAt: '2026-01-01T00:00:00.000Z'
+  }
+];
 
 export const INITIAL_PLOS: PLO[] = [
   {
     id: 'PLO1',
+    programId: 'mba',
     verb: 'Construct',
     text: 'Construct strategic responses to business challenges/opportunities.',
     bloomLevel: 'Create',
@@ -11,26 +39,36 @@ export const INITIAL_PLOS: PLO[] = [
     dimensions: [
       {
         id: '1.1',
-        name: 'Business Environment Analysis',
+        name: 'Analyze Strategic Context',
         rubric: {
-          exceeds: 'Applies multiple frameworks and diagnostic tools using data-driven insights to analyze business context and identify challenges and opportunities',
-          meets: 'Uses one or more frameworks and diagnostic tool with limited depth or weak data linkage.',
-          doesNotMeet: 'Lack appropriate framework or analysis is incorrect'
+          exceeds: 'Uses multiple relevant frameworks, diverse evidence, technology-supported insights where appropriate, and considers economic, social, environmental, AND Indigenous contexts to develop a comprehensive description of the strategic situation.',
+          meets: 'Uses relevant frameworks, credible evidence, and some appropriate contextual factors to analyze the business situation and identify key challenges or opportunities.',
+          doesNotMeet: 'Uses limited or inappropriate frameworks and evidence, with minimal consideration of relevant contextual factors, resulting in an incomplete or unsupported analysis.'
         }
       },
       {
         id: '1.2',
+        name: 'Evaluate Strategic Alternatives',
+        rubric: {
+          exceeds: 'Meets all "Meets Standard" criteria, and evaluates three or more alternatives; explicitly weighs risks against opportunities for each alternative; supports the evaluation with specific evidence (financial data, market research, case facts) rather than general assertion; identifies impacts across multiple stakeholder groups (e.g., customers, employees, shareholders, community)',
+          meets: 'Compares at least two strategic alternatives against explicitly stated criteria (e.g., cost, feasibility, risk, time to implement); identifies impacts on at least one key stakeholder group for each alternative',
+          doesNotMeet: 'Considers only one alternative, or presents multiple alternatives without stating the criteria used to compare them; stakeholder impacts are not identified, or are asserted without supporting reasoning'
+        }
+      },
+      {
+        id: '1.3',
         name: 'Construct Strategic Responses',
         rubric: {
-          exceeds: 'Constructs feasible, well-aligned strategic responses supported by analysis.',
-          meets: 'Strategic responses are reasonably aligned and supported by analysis.',
-          doesNotMeet: 'Strategic responses are unclear, unrealistic, not aligned with business context'
+          exceeds: 'Develops a feasible, innovative, and evidence-based strategic response that aligns with organizational goals, stakeholder needs, and implementation requirements.',
+          meets: 'Develops a practical strategic response supported by analysis, relevant evidence, and consideration of implementation requirements.',
+          doesNotMeet: 'Proposes a response that is unrealistic, insufficiently supported, or disconnected from the analysis of the business challenge or opportunity.'
         }
       }
     ]
   },
   {
     id: 'PLO2',
+    programId: 'mba',
     verb: 'Assess',
     text: 'Assess ethical implications of business activities.',
     bloomLevel: 'Evaluate',
@@ -39,35 +77,36 @@ export const INITIAL_PLOS: PLO[] = [
     dimensions: [
       {
         id: '2.1',
-        name: 'Ethical Issue Identification',
+        name: 'Identify Ethical Issues',
         rubric: {
-          exceeds: 'Accurately and comprehensively identifies ethical implications, stakeholders, and potential impacts of business activities.',
-          meets: 'Identifies the main ethical implications and stakeholders related to business activities.',
-          doesNotMeet: 'Fails to identify key ethical implications or stakeholders in business activities.'
+          exceeds: 'Meets all "Meets Standard" criteria, and explicitly explains how two or more identified issues are connected (e.g., resolving one affects another); identifies at least one specific instance where stakeholder interests conflict, rather than listing interests separately; addresses Indigenous rights or interests when the situation involves them; traces at least one broader societal implication beyond the immediate organization (e.g., regulatory precedent, industry-wide effect, long-term reputational risk)',
+          meets: 'Identifies at least two distinct ethical issues; names the stakeholder group(s) affected by each issue; states at least one broader social or organizational implication (e.g., reputational, regulatory, financial) for at least one issue',
+          doesNotMeet: 'Fails to identify significant ethical issues, stakeholder concerns, or broader implications related to the situation.'
         }
       },
       {
         id: '2.2',
-        name: 'Ethical Analysis & Framework Application',
+        name: 'Analyze Ethical Context',
         rubric: {
-          exceeds: 'Critically applies appropriate ethical theories, frameworks, and professional standards to analyze business activities with strong justification.',
-          meets: 'Applies relevant ethical frameworks and standards adequately to analyze business activities.',
-          doesNotMeet: 'Ethical frameworks are missing, incorrectly applied, or analysis is superficial'
+          exceeds: 'Meets all "Meets Standard" criteria, and applies two or more ethical frameworks and compares what each implies for the situation; explicitly connects at least two contextual factors to one another (e.g., explains how a legal requirement conflicts with or is shaped by a cultural norm) rather than listing them separately; states an ethical conclusion and ties it back to specific framework principles as justification',
+          meets: 'Names and correctly applies at least one recognized ethical framework (e.g., utilitarianism, deontology, virtue ethics, stakeholder theory) to the situation; addresses at least three of the four contextual factors (legal, cultural, technological, social), each discussed individually',
+          doesNotMeet: 'Does not name a specific ethical framework, or applies one in a way that contradicts its own stated principles; addresses zero or one of the four contextual factors (legal, cultural, technological, social)'
         }
       },
       {
         id: '2.3',
-        name: 'Values-Based Decision-Making',
+        name: 'Make Responsible Recommendations',
         rubric: {
-          exceeds: 'Proposes well-justified decisions and actions that strongly reflect ethical values, social responsibility, and professional integrity.',
-          meets: 'Proposes decisions generally aligned with ethical values and professional standards.',
-          doesNotMeet: 'Decisions lack ethical justification or disregard ethical values and professional responsibility.'
+          exceeds: 'Recommends ethical, accountable, and sustainable actions supported by sound reasoning, stakeholder considerations, and awareness of short- and long-term consequences.',
+          meets: 'Recommends ethically appropriate actions supported by reasoning, consideration of stakeholders, and awareness of potential consequences.',
+          doesNotMeet: 'Recommends actions that lack ethical justification, accountability, or consideration of stakeholder impacts and long-term consequences.'
         }
       }
     ]
   },
   {
     id: 'PLO3',
+    programId: 'mba',
     verb: 'Develop',
     text: 'Develop, implement, and evaluate solutions to business problems.',
     bloomLevel: 'Create',
@@ -76,35 +115,36 @@ export const INITIAL_PLOS: PLO[] = [
     dimensions: [
       {
         id: '3.1',
-        name: 'Solution Design',
+        name: 'Diagnose & Define Problems',
         rubric: {
-          exceeds: 'Develops accurate, feasible, and well- supported solutions aligned with the problem and supported by appropriate analysis',
-          meets: 'Develops partially supported solutions with limited analysis or minor errors',
-          doesNotMeet: 'Develops unclear, unsupported, or misaligned solutions'
+          exceeds: 'Identifies root causes using evidence from multiple perspectives, integrates relevant data and stakeholder insights, and demonstrates a comprehensive understanding of underlying factors influencing the problem.',
+          meets: 'Identifies key issues using relevant information and demonstrates an understanding of the main factors contributing to the problem.',
+          doesNotMeet: 'Provides a limited or inaccurate understanding of the problem, with unclear root causes and insufficient supporting evidence.'
         }
       },
       {
         id: '3.2',
-        name: 'Implementation Planning',
+        name: 'Design & Implement Solutions',
         rubric: {
-          exceeds: 'Provides a realistic and detailed implementation plan and effectively applies quantitative and/or qualitative analysis to justify decisions and recommendations',
-          meets: 'Provides a limited implementation plan with partial quantitative or qualitative justification',
-          doesNotMeet: 'Provides an unclear or incomplete implementation plan with weak, incorrect, or missing analysis'
+          exceeds: 'Meets all "Meets Standard" criteria, and identifies at least one specific implementation risk paired with a concrete mitigation or contingency step (not just "monitor closely"); sequences actions with explicit dependencies (what must happen before what, and by when); where a technology-enabled tool or process would materially aid execution, names the specific tool/process and how it\'s used — rather than a generic reference to "leveraging technology"',
+          meets: 'Specifies concrete actions in sequence; identifies specific resources required (budget, staffing, time) with enough detail to act on; identifies at least one stakeholder group affected by implementation and how they are affected',
+          doesNotMeet: 'Plan omits required actions, resources, or affected stakeholders, or specifies them too vaguely to act on (e.g., "allocate sufficient budget" without a figure or source); includes actions inconsistent with stated constraints (e.g., timeline, budget, staffing)'
         }
       },
       {
         id: '3.3',
-        name: 'Evaluation & Continuous Improvement',
+        name: 'Evaluate & Improve Solutions',
         rubric: {
-          exceeds: 'Critically evaluates outcomes, validates assumptions, and proposes meaningful improvements',
-          meets: 'Provides limited evaluation with minimal insight into assumptions or improvements.',
-          doesNotMeet: 'Provides little or no meaningful evaluation or improvement analysis'
+          exceeds: 'Uses meaningful measures to evaluate outcomes, analyzes performance results, identifies areas for improvement, and proposes continuous improvement strategies to enhance solution effectiveness over time.',
+          meets: 'Evaluates outcomes using appropriate criteria and identifies opportunities to improve solution effectiveness.',
+          doesNotMeet: 'Provides limited or unsupported evaluation of outcomes, with little evidence of reflection or consideration of improvement opportunities.'
         }
       }
     ]
   },
   {
     id: 'PLO4',
+    programId: 'mba',
     verb: 'Formulate',
     text: 'Formulate business decisions and systematic analysis that reflects critical thinking.',
     bloomLevel: 'Create',
@@ -113,17 +153,45 @@ export const INITIAL_PLOS: PLO[] = [
     dimensions: [
       {
         id: '4.1',
-        name: 'Challenges status quo using quantitative data',
+        name: 'Identify Relevant Information Amidst Uncertainty',
         rubric: {
-          exceeds: 'Demonstrates comprehensive and critical analysis using relevant quantitative data, challenges assumptions and conventional thinking, identifies potential bias or limitations, and provides insightful evidence-based conclusions and recommendations.',
-          meets: 'Uses appropriate quantitative data and logical analysis to support conclusions, evaluate assumptions, and develop reasonable recommendations. Uses appropriate data and analysis to support logical conclusions and recommendation',
-          doesNotMeet: 'Demonstrates limited, inaccurate, or unsupported analysis, relies on weak interpretation of quantitative data, or fails to critically evaluate assumptions and conclusions.'
+          exceeds: 'Demonstrates critical and comprehensive evaluation of evidence, assumptions, uncertainties, technologically-aided search outputs, and information gaps.',
+          meets: 'Recognizes relevant information, evidence and uncertainties, with some critical and comprehensive evaluation.',
+          doesNotMeet: 'Displays a limited, inaccurate, or unsupported evaluation of or overlooks important information and evidence.'
+        }
+      },
+      {
+        id: '4.2',
+        name: 'Explore Perspectives & Assumptions',
+        rubric: {
+          exceeds: 'Integrates multiple viewpoints in exploration, including Indigenous and diverse perspectives, while recognizing bias.',
+          meets: 'Considers a few alternative viewpoints in exploration of perspectives and assumptions.',
+          doesNotMeet: 'Fails to consider alternative viewpoints in exploration and/or relies on a single perspective.'
+        }
+      },
+      {
+        id: '4.3',
+        name: 'Evaluate Merits & Limitations',
+        rubric: {
+          exceeds: 'Meets all "Meets Standard" criteria, and weighs the merits against the limitations for at least one alternative to reach an explicit judgment about its net desirability (not merely listing both sides); describes at least one potential outcome in terms of likelihood or magnitude (e.g., "likely," "a significant cost increase," a range) rather than as a flat yes/no result; compares limitations across alternatives to identify which are more manageable or more severe relative to each other',
+          meets: 'Identifies at least one merit and one limitation for each alternative considered; connects each merit or limitation to a specific likely outcome of that alternative (e.g., "faster to implement" tied to "reduces exposure to a competitor\'s first-mover advantage")',
+          doesNotMeet: 'Fails to identify or ignores the merits and limitations of alternatives.'
+        }
+      },
+      {
+        id: '4.4',
+        name: 'Finalize & Justify Decisions',
+        rubric: {
+          exceeds: 'Uses explicit and comprehensive decision criteria when formulating decisions and provides evidence-based justification to support the decision rationale.',
+          meets: 'Provides evidence-based justification to support the decision rationale without explicitly stated criteria.',
+          doesNotMeet: 'Provides weak or unsupported justification for decisions, if any.'
         }
       }
     ]
   },
   {
     id: 'PLO5',
+    programId: 'mba',
     verb: 'Collaborate',
     text: 'Collaborate effectively as a business leader and team member in cross-cultural and global contexts to achieve common goals.',
     bloomLevel: 'Apply',
@@ -132,17 +200,27 @@ export const INITIAL_PLOS: PLO[] = [
     dimensions: [
       {
         id: '5.1',
-        name: 'Team Contribution & Collaboration in cross-cultural context',
+        name: 'Contribute to Group Work',
         rubric: {
-          exceeds: 'Collaborates effectively and professionally while demonstrating respect for diverse perspectives and constructive contribution to team process and outcomes',
-          meets: 'Collaborates appropriately with others and demonstrates consideration of diverse perspectives and shared team responsibilities',
-          doesNotMeet: 'Demonstrates limited or inconsistent collaboration, engagement with diverse perspectives, or contribution to shared team responsibilities'
+          exceeds: 'Meets all "Meets Standard" criteria, and demonstrably improves team output beyond own assigned task — e.g., identifies and resolves a gap/error in another member\'s work, proposes a solution later adopted by the team, or takes on additional coordination/integration work reflected in team artifacts',
+          meets: 'Completes assigned tasks on time and to a workable standard; responds to teammate feedback with revisions; peer/self-assessment and team artifacts (meeting notes, task log, shared documents) show a fair share of team workload',
+          doesNotMeet: 'Misses agreed deadlines or deliverables more than once; contributions require rework by teammates without offering revisions; peer/self-assessment or team log shows contribution below an equitable share of team tasks'
+        }
+      },
+      {
+        id: '5.2',
+        name: 'Display Inclusive Collaboration',
+        rubric: {
+          exceeds: 'Meets all "Meets Standard" criteria, and initiates a specific, documented action that measurably increased a teammate\'s participation. For example, followed up individually with a teammate outside of group meetings to incorporate input that hadn\'t surfaced in discussion (reflected in messages or revised drafts), restructured task allocation to fit a stated need, or explicitly handed a leadership moment (running a meeting segment, presenting the team\'s work) to a quieter member, etc.',
+          meets: 'Team artifacts (meeting notes, peer evaluation, shared documents) show at least one documented instance of soliciting input from a teammate before a decision was finalized, and credits teammates\' ideas by name in discussion or written work',
+          doesNotMeet: 'Peer evaluation, self-assessment, or team log documents a specific instance of dismissing, interrupting, or excluding a teammate\'s contribution; or no evidence in team artifacts of soliciting input from teammates beyond default meeting attendance'
         }
       }
     ]
   },
   {
     id: 'PLO6',
+    programId: 'mba',
     verb: 'Lead',
     text: 'Lead teams through the resolution of problems and successful completion of projects and tasks.',
     bloomLevel: 'Apply',
@@ -151,26 +229,27 @@ export const INITIAL_PLOS: PLO[] = [
     dimensions: [
       {
         id: '6.1',
-        name: 'Leads Team',
+        name: 'Perform Emerging Leadership Behaviors',
         rubric: {
-          exceeds: 'Consistently motivates and coordinates team members, facilitates strong collaboration and engagement, resolves challenges constructively, and drives the team toward high performance outcomes.',
-          meets: 'Provides clear direction and support to team members, communicates regularly, contributes positively to collaboration, and supports achievement of team goals',
-          doesNotMeet: 'Provides limited direction to team members, participates inconsistently in team communication and meetings, and contributes unevenly to team motivation and collaboration'
+          exceeds: 'Meets all "Meets Standard" criteria, and demonstrates leadership actions across at least two distinct categories (structuring work, resolving conflict, re-engaging a disengaged teammate), with evidence that a specific action directly prevented a negative outcome (e.g., a missed deadline, a stalled deliverable) — documented in team log, peer evaluation, or instructor observation',
+          meets: 'At least one documented instance of: proposing a plan or structure the team otherwise lacked (e.g., task breakdown, meeting agenda, decision process), or resolving a specific team conflict or stalled decision — reflected in team log or peer evaluation',
+          doesNotMeet: 'No documented instance of the student initiating structure, resolving a stalled decision or conflict, or re-engaging a disengaged teammate, when the team log or peer evaluation shows such a need arose'
         }
       },
       {
         id: '6.2',
-        name: 'Project & Task Management',
+        name: 'Integrate Organizational Considerations into Team Decisions',
         rubric: {
-          exceeds: 'Proactively organizes and coordinates internal and external tasks, anticipates challenges, maintains strong communication with stakeholders, and consistently delivers high-quality outcomes on or ahead of schedule',
-          meets: 'Completes assigned internal and external tasks on time, manages timelines and deliverables effectively, and communicates progress appropriately',
-          doesNotMeet: 'Completes tasks inconsistently, demonstrates limited coordination of timelines and deliverables, and requires reminders or follow-up to meet expectations'
+          exceeds: 'Meets all "Meets Standard" criteria, and incorporates three or more considerations; explicitly identifies at least one instance where two considerations trade off against each other (e.g., an innovation opportunity that raises sustainability concerns) and explains how the team\'s recommendation resolves or navigates that tradeoff',
+          meets: 'Deliverable explicitly incorporates at least two of the four considerations into the team\'s recommendation or decision, with stated reasoning connecting each consideration to the outcome (not merely listed)',
+          doesNotMeet: 'Team deliverable addresses zero or one of the four considerations (ethics, sustainability, innovation, technology) explicitly, or a consideration is mentioned without being connected to the team\'s actual recommendation or decision'
         }
       }
     ]
   },
   {
     id: 'PLO7',
+    programId: 'mba',
     verb: 'Integrate',
     text: 'Integrate personal values and perspectives into problem solving and take responsibility for decisions.',
     bloomLevel: 'Create',
@@ -179,26 +258,27 @@ export const INITIAL_PLOS: PLO[] = [
     dimensions: [
       {
         id: '7.1',
-        name: 'Values-Based Decision-Making',
+        name: 'Identify Personal Values and Perspectives',
         rubric: {
-          exceeds: 'Clearly articulates personal values and consistently integrates them into decision-making. Demonstrates strong self-awareness and critically reflects on how values influence problem-solving and outcomes.',
-          meets: 'Identifies personal values and incorporates them into decision- making with some evidence of reflection and alignment.',
-          doesNotMeet: 'Demonstrates limited or unclear awareness of personal values, with weak or no connection to decision-making processes.'
+          exceeds: 'Critically reflects on personal values, assumptions, and perspectives, integrating them with alternative viewpoints to guide business decisions.',
+          meets: 'Identifies personal values and incorporates them into decision-making with clear evidence of alignment.',
+          doesNotMeet: 'Demonstrates weak or unclear personal values with no discernable connection to decision-making processes.'
         }
       },
       {
         id: '7.2',
-        name: 'Accountability & Decision Justification',
+        name: 'Maintain Accountability',
         rubric: {
-          exceeds: 'Takes full responsibility for decisions, provides well-reasoned and evidence-based justification, and critically evaluates outcomes, including lessons learned and areas for improvement.',
-          meets: 'Accepts responsibility for decisions and provides reasonable justification supported by some analysis, with basic reflection on outcomes.',
-          doesNotMeet: 'Avoids or inconsistently accepts responsibility, provides weak or unclear justification, and demonstrates little or no reflection on outcomes.'
+          exceeds: 'Meets all "Meets Standard" criteria, and explicitly evaluates whether the outcome aligned with the originally stated objective (not just whether it "worked out"); when the outcome fell short of that objective, identifies the specific gap between intended and actual result and explains why it occurred; connects the reflection to a general principle or approach for future decisions, rather than only a fix specific to this one case',
+          meets: 'Explicitly attributes the outcome to their own decision or action; states the specific reasoning or criteria used in making that decision; identifies at least one specific thing they would repeat or change if facing a similar situation again',
+          doesNotMeet: 'Attributes the outcome primarily to external factors, other people, or circumstances rather than to their own decision; does not state the reasoning behind the decision at the time it was made; does not identify anything they would repeat or change if facing the situation again'
         }
       }
     ]
   },
   {
     id: 'PLO8',
+    programId: 'mba',
     verb: 'Communicate',
     text: 'Communicate ideas persuasively (written and oral) as a result of thorough analysis of information.',
     bloomLevel: 'Apply',
@@ -209,24 +289,34 @@ export const INITIAL_PLOS: PLO[] = [
         id: '8.1',
         name: 'Written Communication',
         rubric: {
-          exceeds: 'Clear, persuasive, well-structured business writing supported by credible evidence, professional tone, and polished formatting with minimal to no errors.',
-          meets: 'Clear and organized business writing with relevant evidence, professional tone, and appropriate formatting with minor errors.',
-          doesNotMeet: 'Unclear, poorly organized writing, lacking evidence, professional tone, or appropriate business formatting.'
+          exceeds: 'Meets all "Meets Standard" criteria, and anticipates and explicitly addresses at least one counterargument or alternative interpretation of the evidence; uses specific, concrete evidence to support every major claim; demonstrates strong command of grammar, spelling, punctuation, and formatting with minimal to no errors, and clear, precise sentence-level construction throughout',
+          meets: 'States a clear central argument or recommendation early in the document; supports each major claim with specific evidence from the analysis; organizes content in a logical sequence appropriate to the document type; grammar, spelling, punctuation, and formatting follow professional business writing conventions, with occasional minor errors',
+          doesNotMeet: 'Central argument or recommendation is unclear, absent, or not stated until late in the document; claims are asserted without supporting evidence from the analysis; grammar, spelling, punctuation, or formatting contains frequent errors inconsistent with professional business writing standards'
         }
       },
       {
         id: '8.2',
         name: 'Oral Communication',
         rubric: {
-          exceeds: 'Confident, engaging presentation with professional delivery and effective use of supporting materials to reinforce key business ideas and recommendations.',
-          meets: 'Clear presentation with professional delivery, despite minor issues, and adequate support for key business ideas and recommendations.',
-          doesNotMeet: 'Unclear or unprofessional presentation, lacking or completely missing effective delivery or adequate support for business communication.'
+          exceeds: 'Delivers engaging presentations that effectively integrate presentation techniques (e.g., eye contact, storytelling, multimedia elements, varied speaking rate and pitch, and well-designed slides) with visuals to reinforce key business ideas.',
+          meets: 'Delivers clear, professional presentations that effectively communicate business ideas.',
+          doesNotMeet: 'Presentation lacks clarity, organization, or effective delivery.'
+        }
+      },
+      {
+        id: '8.3',
+        name: 'Maintain Focus on the Relevant Audience',
+        rubric: {
+          exceeds: 'Meets all "Meets Standard" criteria, and adapts communication across multiple aspects simultaneously (e.g., tone, structure, technical detail, and content selection together); when more than one audience is relevant, addresses each audience\'s distinct needs separately (e.g., a different framing for executives than for technical staff) rather than using one generic version for everyone',
+          meets: 'Explicitly identifies the intended audience; adapts at least one aspect of communication (e.g., tone, level of technical detail, or content included/excluded) to match that audience\'s background or needs',
+          doesNotMeet: 'Fails to adapt communication to the relevant audience.'
         }
       }
     ]
   },
   {
     id: 'PLO9',
+    programId: 'mba',
     verb: 'Gather',
     text: 'Gather, analyze, and synthesize information for a business context.',
     bloomLevel: 'Analyze',
@@ -235,29 +325,29 @@ export const INITIAL_PLOS: PLO[] = [
     dimensions: [
       {
         id: '9.1',
-        name: 'Data Management (Data Collection + Data Cleaning + Data Normalization + Data governance)',
+        name: 'Gather & Validate Information',
         rubric: {
-          exceeds: 'Uses relevant, credible, and high- quality sources effectively',
-          meets: 'Uses some relevant sources, but limited credibility or relevance',
-          doesNotMeet: 'Uses poor, irrelevant, or insufficient sources'
+          exceeds: 'Critically evaluates diverse, credible sources, leveraging sophisticated analytical tools, community wisdom (as appropriate), and research assets from varied perspectives.',
+          meets: 'Utilizes relevant and credible sources to support business analysis.',
+          doesNotMeet: 'Relies on weak, irrelevant, or insufficient sources for decision-making.'
         }
       },
       {
         id: '9.2',
-        name: 'Data Analysis & Interpretation',
+        name: 'Analyze & Synthesize Information',
         rubric: {
-          exceeds: 'Close to PLO 4.1- needs more discussion',
-          meets: 'N.A',
-          doesNotMeet: 'N.A'
+          exceeds: 'Meets all "Meets Standard" criteria, and draws on three or more sources or perspectives (e.g., different data types, stakeholder viewpoints, or conflicting reports) to identify at least two distinct patterns or relationships; explicitly addresses a contradiction or tension between sources rather than presenting them as if they agree',
+          meets: 'Draws on information from at least two distinct sources or datasets to identify at least one explicit pattern or relationship (e.g., a trend, a correlation, a cause-and-effect link) that is not stated directly in any single source',
+          doesNotMeet: 'Presents information source-by-source without connecting it (e.g., summarizes each source in isolation), or states a conclusion not traceable to the information presented; identifies no explicit pattern or relationship across sources'
         }
       },
       {
         id: '9.3',
-        name: 'Insight Generation for Business Decisions',
+        name: 'Generate Insights',
         rubric: {
-          exceeds: 'Close to PLO 4.2- needs more discussion',
-          meets: 'N.A',
-          doesNotMeet: 'N.A'
+          exceeds: 'Develops actionable, evidence-based insights while explicitly acknowledging limitations to prevent oversight.',
+          meets: 'Develops reasonable insights that are adequately supported by evidence.',
+          doesNotMeet: 'Insights are absent, weak, unsupported, or contrary to critical evidence.'
         }
       }
     ]
@@ -265,7 +355,7 @@ export const INITIAL_PLOS: PLO[] = [
 ];
 
 export const INITIAL_COURSES: Course[] = [
-  // Term 1 (Tier 1: Analytical Foundation)
+  // Term 1: Analytical Foundation
   {
     id: 'BUSI601',
     code: 'BUSI 601',
@@ -318,7 +408,7 @@ export const INITIAL_COURSES: Course[] = [
       { id: 'CLO4', verb: 'Apply', text: 'Apply decision tree analysis to evaluate and choose optimal strategic alternatives.' }
     ]
   },
-  // Term 2 (Tier 2: Management Principles and Practices)
+  // Term 2: Management Principles and Practices
   {
     id: 'MRKT621',
     code: 'MRKT 621',
@@ -371,7 +461,7 @@ export const INITIAL_COURSES: Course[] = [
       { id: 'CLO4', verb: 'Assess', text: 'Assess regulatory anti-trust guidelines and competitive game-theoretic behaviors.' }
     ]
   },
-  // Term 3 (Tier 3: Strategic Applications)
+  // Term 3: Strategic Applications
   {
     id: 'ANLY630',
     code: 'ANLY 630',
@@ -411,7 +501,7 @@ export const INITIAL_COURSES: Course[] = [
       { id: 'CLO4', verb: 'Lead', text: 'Lead project execution tracking using Earned Value Management (EVM) metrics.' }
     ]
   },
-  // Term 4 (Tier 4: Integration and Career)
+  // Term 4: Integration and Career
   {
     id: 'BUSI650',
     code: 'BUSI 650',
@@ -522,9 +612,18 @@ export const INITIAL_MAPPINGS: { [key: string]: string[] } = {
 };
 
 export const DEFAULT_SETTINGS: Setting = {
-  id: 'general',
+  id: 'mba_general',
+  programId: 'mba',
   thresholdTerm: 3,
-  thresholdProgram: 5
+  thresholdProgram: 5,
+  facultySandboxEnabled: false,
+  activeRoundId: '',
+  activeRoundName: '',
+  feedbackLevels: {
+    plo: true,
+    dimension: true,
+    rubric: true
+  }
 };
 
 // Initial assignments seed for each course
@@ -628,3 +727,298 @@ export const INITIAL_STUDENTS: Student[] = [
     }
   }
 ];
+export const INITIAL_BCOM_PLOS: PLO[] = [
+  {
+    id: 'PLO1',
+    programId: 'bcom',
+    verb: 'Apply',
+    text: 'Apply contemporary business methods and analytical tools to organizational challenges.',
+    bloomLevel: 'Apply',
+    order: 1,
+    shortNotation: 'Analytical Tools & Business Methods',
+    dimensions: [
+      {
+        id: '1.1',
+        name: 'Select Appropriate Business Methods and Analytical Tools',
+        rubric: {
+          exceeds: 'Selects the most appropriate business methods and analytical tools for the organizational challenge and justifies the selection using relevant criteria.',
+          meets: 'Selects appropriate and relevant business methods and analytical tools that address the organizational challenge.',
+          doesNotMeet: 'Selects methods or analytical tools that are inappropriate or poorly matched to the organizational challenge and requires substantial guidance.'
+        }
+      },
+      {
+        id: '1.2',
+        name: 'Apply Methods and Analytical Tools',
+        rubric: {
+          exceeds: 'Applies methods and tools to the organizational context, explains the rationale for key adaptations, and applies them accurately to the challenge.',
+          meets: 'Applies appropriate methods and tools correctly to address the organizational challenge.',
+          doesNotMeet: 'Applies methods or tools inaccurately, incompletely, or without sufficient connection to the challenge.'
+        }
+      },
+      {
+        id: '1.3',
+        name: 'Interpret Results and Develop Recommendations',
+        rubric: {
+          exceeds: 'Integrates analytical results from the relevant evidence to develop well-supported recommendations that address the organizational challenge and its implications.',
+          meets: 'Interprets results appropriately and uses them to develop relevant recommendations.',
+          doesNotMeet: 'Misinterprets results or provides recommendations that are unclear, inappropriate, or insufficiently supported.'
+        }
+      }
+    ]
+  },
+  {
+    id: 'PLO2',
+    programId: 'bcom',
+    verb: 'Evaluate',
+    text: 'Evaluate complex business problems through critical, logical, and evidence-based reasoning.',
+    bloomLevel: 'Evaluate',
+    order: 2,
+    shortNotation: 'Critical & Evidence-Based Reasoning',
+    dimensions: [
+      {
+        id: '2.1',
+        name: 'Analyze Business Problems',
+        rubric: {
+          exceeds: 'Identifies and analyzes relevant aspects of the business problem, including relationships, assumptions, and implications, and explains how they affect the analysis.',
+          meets: 'Identifies and analyzes relevant factors associated with the business problem.',
+          doesNotMeet: 'Provides limited, incomplete, or inaccurate analysis of the business problem.'
+        }
+      },
+      {
+        id: '2.2',
+        name: 'Evaluate Evidence and Alternatives',
+        rubric: {
+          exceeds: 'Evaluates the quality and relevance of evidence using explicit criteria, weighs alternative explanations or solutions, and explains the implications of the comparison.',
+          meets: 'Evaluates relevant evidence using appropriate criteria and considers alternative explanations or solutions.',
+          doesNotMeet: 'Uses insufficient or inappropriate evidence or provides no consideration of alternatives.'
+        }
+      },
+      {
+        id: '2.3',
+        name: 'Develop Evidence-Based Conclusions',
+        rubric: {
+          exceeds: 'Develops logical, well-supported conclusions that integrate evidence and address the complexity of the problem.',
+          meets: 'Develops logical conclusions supported by relevant evidence.',
+          doesNotMeet: 'Conclusions are unclear, illogical, or insufficiently supported by evidence.'
+        }
+      }
+    ]
+  },
+  {
+    id: 'PLO3',
+    programId: 'bcom',
+    verb: 'Describe',
+    text: 'Describe business decisions and practices through ethical, legal, and social responsibility frameworks.',
+    bloomLevel: 'Understand',
+    order: 3,
+    shortNotation: 'Ethical, Legal & Social Responsibility',
+    dimensions: [
+      {
+        id: '3.1',
+        name: 'Identify Ethical, Legal, and Social Responsibility Considerations',
+        rubric: {
+          exceeds: 'Identifies and analyzes multiple relevant ethical, legal, and social responsibility considerations and explains their implications.',
+          meets: 'Identifies relevant ethical, legal, and social responsibility considerations.',
+          doesNotMeet: 'Fails to identify significant considerations or demonstrates limited understanding of their relevance.'
+        }
+      },
+      {
+        id: '3.2',
+        name: 'Apply Relevant Frameworks to Business Decisions',
+        rubric: {
+          exceeds: 'Integrates relevant ethical, legal, and social responsibility frameworks and analyzes how they apply to the business decision or practice.',
+          meets: 'Applies relevant frameworks appropriately to the business decision or practice.',
+          doesNotMeet: 'Applies frameworks inaccurately, superficially, or without sufficient connection to the decision or practice.'
+        }
+      },
+      {
+        id: '3.3',
+        name: 'Explain Implications of Business Decisions and Practices',
+        rubric: {
+          exceeds: 'Clearly explains the potential consequences and competing considerations associated with business decisions and practices.',
+          meets: 'Describes relevant implications of business decisions and practices.',
+          doesNotMeet: 'Provides limited, unclear, or unsupported explanation of the implications.'
+        }
+      }
+    ]
+  },
+  {
+    id: 'PLO4',
+    programId: 'bcom',
+    verb: 'Communicate',
+    text: 'Communicate business information and arguments across written, oral, and digital formats.',
+    bloomLevel: 'Apply',
+    order: 4,
+    shortNotation: 'Business Communication & Arguments',
+    dimensions: [
+      {
+        id: '4.1',
+        name: 'Organize Business Information and Arguments',
+        rubric: {
+          exceeds: 'Uses a deliberate structure that prioritizes key information, establishes clear relationships among ideas, and strengthens the intended message.',
+          meets: 'Organizes business information and arguments logically and coherently.',
+          doesNotMeet: 'Communicates information with gaps in organization, relevance, or logical sequencing.'
+        }
+      },
+      {
+        id: '4.2',
+        name: 'Communicate Clearly and Persuasively',
+        rubric: {
+          exceeds: 'Communicates ideas clearly and persuasively using appropriate evidence, reasoning, and language use.',
+          meets: 'Communicates ideas clearly using appropriate evidence and reasoning.',
+          doesNotMeet: 'Claims or recommendations are insufficiently supported by evidence and reasoning.'
+        }
+      },
+      {
+        id: '4.3',
+        name: 'Adapt Communication Across Formats and Audiences',
+        rubric: {
+          exceeds: 'Effectively adapts content, tone, evidence, and presentation to different audiences and written, oral, or digital formats.',
+          meets: 'Uses an appropriate communication for the audience and format.',
+          doesNotMeet: 'Provides limited evidence of adapting communication to the audience or format.'
+        }
+      }
+    ]
+  },
+  {
+    id: 'PLO5',
+    programId: 'bcom',
+    verb: 'Explain',
+    text: 'Explain the role of technology in business decisions and organizational performance.',
+    bloomLevel: 'Understand',
+    order: 5,
+    shortNotation: 'Technology in Business Decisions',
+    dimensions: [
+      {
+        id: '5.1',
+        name: 'Identify the Role of Technology in Business',
+        rubric: {
+          exceeds: 'Analyzes multiple ways relevant technologies influence business decisions, processes, or organizational performance and connects those influences to the business context.',
+          meets: 'Explains relevant ways technology influences business decisions or organizational performance.',
+          doesNotMeet: 'Provides limited or inaccurate explanation of technology\'s role in business.'
+        }
+      },
+      {
+        id: '5.2',
+        name: 'Evaluate Technology-Related Business Implications',
+        rubric: {
+          exceeds: 'Evaluates technology-related benefits, limitations, risks, and/or opportunities using relevant criteria and explains their implications for the business context.',
+          meets: 'Identifies and evaluates relevant benefits, limitations, risks, or opportunities.',
+          doesNotMeet: 'Provides limited or unsupported evaluation of technology-related implications.'
+        }
+      },
+      {
+        id: '5.3',
+        name: 'Apply Technology Insights to Business Decisions',
+        rubric: {
+          exceeds: 'Integrates technology-related evidence into business decisions or recommendations, explains relevant trade-offs, and supports the proposed course of action with evidence.',
+          meets: 'Connects technology-related considerations to an appropriate business decision or recommendation.',
+          doesNotMeet: 'Provides limited or unclear connection between technology and the business decision or recommendation.'
+        }
+      }
+    ]
+  },
+  {
+    id: 'PLO6',
+    programId: 'bcom',
+    verb: 'Collaborate',
+    text: 'Collaborate in diverse teams with leadership adaptability and interpersonal competence.',
+    bloomLevel: 'Apply',
+    order: 6,
+    shortNotation: 'Team Collaboration & Leadership',
+    dimensions: [
+      {
+        id: '6.1',
+        name: 'Contribute to Team Objectives',
+        rubric: {
+          exceeds: 'Takes initiative beyond assigned responsibilities when needed, contributes resources or support that advance team progress, and helps others fulfill team objectives.',
+          meets: 'Fulfills assigned responsibilities and makes appropriate contributions to team objectives.',
+          doesNotMeet: 'Makes limited contributions, does not consistently fulfill responsibilities, or negatively affects team progress.'
+        }
+      },
+      {
+        id: '6.2',
+        name: 'Collaborate Across Diverse Perspectives',
+        rubric: {
+          exceeds: 'Seeks out and incorporates different perspectives into team discussions, decisions, and outcomes.',
+          meets: 'Recognizes and appropriately considers different perspectives when presented by team members.',
+          doesNotMeet: 'Provides limited evidence of considering or incorporating different perspectives.'
+        }
+      },
+      {
+        id: '6.3',
+        name: 'Demonstrate Leadership Adaptability and Interpersonal Competence',
+        rubric: {
+          exceeds: 'Adapts leadership and interpersonal approaches effectively to changing team needs, roles, and circumstances while supporting productive team relationships.',
+          meets: 'Adjusts appropriately to team roles and circumstances and communicates constructively with team members.',
+          doesNotMeet: 'Demonstrates limited adaptability or interpersonal effectiveness, affecting team communication or performance.'
+        }
+      }
+    ]
+  }
+];
+
+export const INITIAL_BCOM_COURSES: Course[] = [];
+export const INITIAL_BCOM_MAPPINGS: { [key: string]: string[] } = {};
+export const INITIAL_BCOM_ASSIGNMENTS: { [courseId: string]: Assignment[] } = {};
+export const INITIAL_BCOM_STUDENTS: Student[] = [];
+
+export const DEFAULT_PROGRAM_SETTINGS: Record<string, Setting> = {
+  mba: DEFAULT_SETTINGS,
+  bcom: {
+    id: 'bcom_general',
+    programId: 'bcom',
+    thresholdTerm: 2,
+    thresholdProgram: 4,
+    facultySandboxEnabled: false,
+    activeRoundId: '',
+    activeRoundName: '',
+    feedbackLevels: {
+      plo: true,
+      dimension: true,
+      rubric: true
+    }
+  }
+};
+
+export const INITIAL_FEEDBACK_ROUNDS: FeedbackRound[] = [
+  {
+    id: 'mba_round_july_2026',
+    programId: 'mba',
+    name: 'July 2026',
+    status: 'archived',
+    createdAt: '2026-07-22T00:00:00.000Z',
+    archivedAt: '2026-07-23T00:00:00.000Z',
+    plosSnapshot: INITIAL_PLOS
+  }
+];
+
+export const INITIAL_COMMENTS: FacultyComment[] = [
+  {
+    id: 'mba_comment_1',
+    programId: 'mba',
+    ploId: 'PLO1',
+    dimensionId: '1.1',
+    targetType: 'dimension',
+    metricType: 'exceeds',
+    commentText: 'The Business Environment Analysis criteria nicely aligns with ACBSP accreditation guidelines for strategic problem solving.',
+    authorName: 'Dr. Sarah Jenkins (Faculty Chair)',
+    createdAt: '2026-07-22T10:30:00.000Z',
+    upvotes: ['voter_seed_1', 'voter_seed_2'],
+    roundId: 'mba_round_july_2026',
+    roundName: 'July 2026'
+  },
+  {
+    id: 'mba_comment_2',
+    programId: 'mba',
+    ploId: 'PLO2',
+    targetType: 'description',
+    commentText: 'PLO2 Statement clearly emphasizes ethical analysis and framework application across corporate governance.',
+    authorName: 'Prof. Michael Chen (Strategy Lead)',
+    createdAt: '2026-07-22T14:20:00.000Z',
+    upvotes: ['voter_seed_1'],
+    roundId: 'mba_round_july_2026',
+    roundName: 'July 2026'
+  }
+];
+

@@ -135,7 +135,7 @@ export default function StudentProficiencyTab({
                 </p>
                 <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
                   <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-100 uppercase font-mono">
-                    UCW Graduate Tier
+                    UCW Academic Program
                   </span>
                   <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200 uppercase font-mono">
                     GPA: 3.82 / 4.33

@@ -30,12 +30,16 @@ interface CurriculumChatbotProps {
   courses: Course[];
   plos: PLO[];
   mappings: { [key: string]: string[] };
+  programName?: string;
+  programCode?: string;
 }
 
 export default function CurriculumChatbot({
   courses,
   plos,
-  mappings
+  mappings,
+  programName = 'Master of Business Administration (MBA)',
+  programCode = 'MBA'
 }: CurriculumChatbotProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -43,7 +47,7 @@ export default function CurriculumChatbot({
     {
       id: 'welcome',
       role: 'model',
-      text: "Hello! I am your **MBA Curriculum Specialist Assistant** powered by **Gemini AI**.\n\nI can assist you with:\n- Identifying **curriculum gaps** (undercovered or unmapped PLOs)\n- Generating **mapping suggestions** for any course (e.g., BUSI 601)\n- Aligning Course Learning Outcomes (CLOs) to Program Learning Outcomes (PLOs)\n- Checking Bloom's taxonomic levels for learning verbs.\n\nWhat curriculum question can I help you resolve today?",
+      text: `Hello! I am your **${programCode} Curriculum Specialist Assistant** powered by **Gemini AI**.\n\nI can assist you with:\n- Identifying **curriculum gaps** (undercovered or unmapped PLOs in ${programName})\n- Generating **mapping suggestions** for any course\n- Aligning Course Learning Outcomes (CLOs) to Program Learning Outcomes (PLOs)\n- Checking Bloom's taxonomic levels for learning verbs.\n\nWhat curriculum question can I help you resolve today?`,
       timestamp: new Date()
     }
   ]);

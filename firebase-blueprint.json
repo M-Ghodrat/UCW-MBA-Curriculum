@@ -7,11 +7,19 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier"
+          "description": "Unique identifier, e.g., mba, bcom"
+        },
+        "code": {
+          "type": "string",
+          "description": "Program Code, e.g., MBA, BCom"
         },
         "name": {
           "type": "string",
           "description": "Program Name"
+        },
+        "degreeLevel": {
+          "type": "string",
+          "description": "Degree level: Graduate or Undergraduate"
         },
         "description": {
           "type": "string",
@@ -20,6 +28,14 @@
         "objectives": {
           "type": "string",
           "description": "Program learning objectives and goals"
+        },
+        "termsCount": {
+          "type": "number",
+          "description": "Count of terms/tiers (e.g. 4 for MBA, 8 for BCom)"
+        },
+        "termLabel": {
+          "type": "string",
+          "description": "Label for terms (e.g. Tier or Term)"
         }
       },
       "required": ["id", "name", "description"]
@@ -212,6 +228,10 @@
     }
   },
   "firestore": {
+    "/programs/{programId}": {
+      "schema": "Program",
+      "description": "Multi-program academic details (MBA, BCom, etc.)"
+    },
     "/program/info": {
       "schema": "Program",
       "description": "Global MBA program information"
