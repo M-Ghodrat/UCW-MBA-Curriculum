@@ -45,7 +45,7 @@ const pyramidLevels = [
     desc: 'Put elements together to form a coherent or functional whole; reorganize elements into a new pattern or structure.',
     verbs: 'Create, Construct, Design, Develop, Formulate, Assemble, Plan, Devise, Compose',
     example: 'Formulate a comprehensive market expansion strategy for a high-tech firm.',
-    widthClass: 'w-1/3 min-w-[140px] md:min-w-[180px]',
+    widthClass: 'w-[38%] min-w-[130px]',
     activeColorClass: 'bg-purple-50 text-purple-900 border-purple-200 ring-purple-400',
     badgeColor: 'bg-purple-100 text-purple-800 border-purple-200'
   },
@@ -54,7 +54,7 @@ const pyramidLevels = [
     desc: 'Make judgments based on criteria and standards through checking and critiquing.',
     verbs: 'Evaluate, Assess, Appraise, Judge, Critique, Conclude, Argue, Defend, Rate',
     example: 'Evaluate the financial feasibility and risk profile of a leveraged buyout proposal.',
-    widthClass: 'w-[45%] min-w-[180px] md:min-w-[240px]',
+    widthClass: 'w-[50%] min-w-[170px]',
     activeColorClass: 'bg-orange-50 text-orange-900 border-orange-200 ring-orange-400',
     badgeColor: 'bg-orange-100 text-orange-800 border-orange-200'
   },
@@ -63,7 +63,7 @@ const pyramidLevels = [
     desc: 'Break material into constituent parts and determine how parts relate to one another and to an overall structure or purpose.',
     verbs: 'Analyze, Compare, Contrast, Differentiate, Examine, Distinguish, Question, Test',
     example: 'Analyze a firm\'s cost structure and value chain to identify sources of competitive advantage.',
-    widthClass: 'w-[58%] min-w-[220px] md:min-w-[300px]',
+    widthClass: 'w-[62%] min-w-[210px]',
     activeColorClass: 'bg-amber-50 text-amber-900 border-amber-200 ring-amber-400',
     badgeColor: 'bg-amber-100 text-amber-800 border-amber-200'
   },
@@ -72,7 +72,7 @@ const pyramidLevels = [
     desc: 'Carry out or use a procedure in a given situation (execution or implementation).',
     verbs: 'Apply, Implement, Solve, Use, Demonstrate, Employ, Illustrate, Practice, Operate',
     example: 'Apply regression analysis models to forecast quarterly sales and customer retention rates.',
-    widthClass: 'w-[70%] min-w-[260px] md:min-w-[360px]',
+    widthClass: 'w-[75%] min-w-[250px]',
     activeColorClass: 'bg-indigo-50 text-indigo-900 border-indigo-200 ring-indigo-400',
     badgeColor: 'bg-indigo-100 text-indigo-800 border-indigo-200'
   },
@@ -81,7 +81,7 @@ const pyramidLevels = [
     desc: 'Construct meaning from oral, written, and graphic messages through interpreting, exemplifying, classifying, summarizing, inferring, comparing, and explaining.',
     verbs: 'Explain, Describe, Discuss, Classify, Interpret, Summarize, Locate, Report, Recognize',
     example: 'Explain the core macroeconomic factors driving current global market volatility.',
-    widthClass: 'w-[82%] min-w-[300px] md:min-w-[420px]',
+    widthClass: 'w-[87%] min-w-[280px]',
     activeColorClass: 'bg-cyan-50 text-cyan-900 border-cyan-200 ring-cyan-400',
     badgeColor: 'bg-cyan-100 text-cyan-800 border-cyan-200'
   },
@@ -90,7 +90,7 @@ const pyramidLevels = [
     desc: 'Retrieve relevant knowledge from long-term memory (recognizing and recalling).',
     verbs: 'Define, Identify, List, Recall, Retrieve, State, Name, Memorize, Repeat',
     example: 'List the key compliance requirements under current international financial reporting standards (IFRS).',
-    widthClass: 'w-full min-w-[340px] md:min-w-[480px]',
+    widthClass: 'w-full min-w-[300px]',
     activeColorClass: 'bg-blue-50 text-blue-900 border-blue-200 ring-blue-400',
     badgeColor: 'bg-blue-100 text-blue-800 border-blue-200'
   }
@@ -1359,12 +1359,100 @@ export default function ProgramTab({
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* Pyramid Visual Container (Left Side) */}
-            <div className="lg:col-span-5 flex flex-col items-center justify-center py-6 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono mb-6">Cognitive Complexity</span>
+            {/* Selected Level Reference Card / Cognitive Level Description (Left Side - reduced width lg:col-span-5) */}
+            <div className="lg:col-span-5">
+              {(() => {
+                const currentData = pyramidLevels.find(p => p.level === selectedPyramidLevel) || pyramidLevels[0];
+                const matchingPlos = plos.filter(plo => plo.bloomLevel === currentData.level);
+                
+                return (
+                  <div className={`p-6 rounded-2xl border transition-all duration-300 ${currentData.activeColorClass} shadow-sm space-y-4`}>
+                    <div className="flex justify-between items-start border-b border-slate-200/40 pb-3">
+                      <div>
+                        <span className={`text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border ${currentData.badgeColor}`}>
+                          Cognitive Level {6 - bloomLevels.indexOf(currentData.level)} of 6
+                        </span>
+                        <h4 className="text-xl font-black tracking-tight mt-1.5 text-slate-800">{currentData.level}</h4>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3.5">
+                      <div>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono block">Cognitive Definition</span>
+                        <p className="text-xs text-slate-700 leading-relaxed font-medium mt-1">
+                          {currentData.desc}
+                        </p>
+                      </div>
+
+                      <div className="space-y-3 pt-3 border-t border-slate-200/40">
+                        <div>
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono block">Action Verbs List</span>
+                          <p className="text-xs text-slate-800 font-bold leading-relaxed mt-1">
+                            {currentData.verbs}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono block">Learning Objective Example</span>
+                          <p className="text-xs text-slate-600 italic mt-1 leading-relaxed">
+                            "{currentData.example}"
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Matching PLOs List */}
+                      <div className="pt-3 border-t border-slate-200/40">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono block mb-2">
+                          Program Learning Outcomes mapped to this level ({matchingPlos.length})
+                        </span>
+                        
+                        {matchingPlos.length === 0 ? (
+                          <div className="text-center py-4 bg-white/50 border border-dashed border-slate-200 rounded-xl text-xs text-slate-400 italic">
+                            No PLOs are currently mapped to the {currentData.level} level.
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto pr-1">
+                            {matchingPlos.map(plo => (
+                              <button
+                                key={plo.id}
+                                onClick={() => {
+                                  const card = document.getElementById(`plo-card-${plo.id}`);
+                                  if (card) {
+                                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    card.classList.add('ring-2', 'ring-blue-500');
+                                    setTimeout(() => card.classList.remove('ring-2', 'ring-blue-500'), 2000);
+                                  }
+                                }}
+                                className="bg-white border border-slate-200/80 hover:border-slate-300 p-2.5 rounded-xl text-left transition hover:shadow-sm flex flex-col justify-between h-full group cursor-pointer"
+                              >
+                                <div className="space-y-1">
+                                  <div className="flex justify-between items-center">
+                                    <span className="text-[9px] font-bold font-mono text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-100">{plo.id}</span>
+                                    {plo.shortNotation && (
+                                      <span className="text-[9px] font-mono text-slate-500 truncate max-w-[120px]">{plo.shortNotation}</span>
+                                    )}
+                                  </div>
+                                  <p className="text-[11px] text-slate-700 font-semibold line-clamp-2 group-hover:text-blue-600 transition-colors">
+                                    {plo.verb} {plo.text}
+                                  </p>
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+
+            {/* Pyramid Visual Container (Right Side - expanded width lg:col-span-7) */}
+            <div className="lg:col-span-7 flex flex-col items-center justify-center py-6 bg-white border border-slate-200 rounded-2xl p-6 md:p-8 shadow-sm overflow-hidden">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono mb-6">Cognitive Complexity Hierarchy</span>
               
-              <div className="flex flex-col items-center space-y-2 w-full max-w-md">
-                {pyramidLevels.map((p, index) => {
+              <div className="flex flex-col items-center space-y-2.5 w-full max-w-xl mx-auto px-2">
+                {pyramidLevels.map((p) => {
                   const isSelected = selectedPyramidLevel === p.level;
                   const plosAtLevel = plos.filter(plo => plo.bloomLevel === p.level);
                   
@@ -1400,15 +1488,15 @@ export default function ProgramTab({
                     <button
                       key={p.level}
                       onClick={() => setSelectedPyramidLevel(p.level)}
-                      className={`h-11 ${p.widthClass} flex items-center justify-between px-6 py-2.5 rounded-xl border text-xs font-bold transition-all duration-200 cursor-pointer shadow-sm select-none ${tierStyles} ${
-                        isSelected ? 'scale-[1.03] ring-2 ring-offset-2 ring-slate-400 border-transparent z-10' : 'hover:scale-[1.01]'
+                      className={`h-12 ${p.widthClass} flex items-center justify-between px-4 sm:px-6 py-2.5 rounded-xl border text-xs font-bold transition-all duration-200 cursor-pointer shadow-sm select-none ${tierStyles} ${
+                        isSelected ? 'scale-[1.02] ring-2 ring-offset-2 ring-slate-400 border-transparent z-10' : 'hover:scale-[1.01]'
                       }`}
                       style={{
-                        clipPath: 'polygon(7% 0%, 93% 0%, 100% 100%, 0% 100%)'
+                        clipPath: 'polygon(6% 0%, 94% 0%, 100% 100%, 0% 100%)'
                       }}
                     >
-                      <span className="pl-2 font-sans tracking-wide text-[11px] uppercase font-bold">{p.level}</span>
-                      <span className="pr-2 font-mono text-[9px] font-bold opacity-90">
+                      <span className="pl-2 font-sans tracking-wide text-[11px] sm:text-xs uppercase font-bold">{p.level}</span>
+                      <span className="pr-2 font-mono text-[10px] font-bold opacity-90">
                         {plosAtLevel.length} {plosAtLevel.length === 1 ? 'PLO' : 'PLOs'}
                       </span>
                     </button>
@@ -1416,98 +1504,10 @@ export default function ProgramTab({
                 })}
               </div>
               
-              <div className="flex justify-between w-full max-w-xs mt-6 text-[9px] font-mono text-slate-400 font-bold px-2">
-                <span>HIGHER-ORDER (TOP)</span>
-                <span>LOWER-ORDER (BASE)</span>
+              <div className="flex justify-between w-full max-w-xl mt-6 text-[9px] font-mono text-slate-400 font-bold px-4">
+                <span>▲ HIGHER-ORDER THINKING (TOP)</span>
+                <span>LOWER-ORDER THINKING (BASE) ▼</span>
               </div>
-            </div>
-
-            {/* Selected Level Reference Card (Right Side) */}
-            <div className="lg:col-span-7">
-              {(() => {
-                const currentData = pyramidLevels.find(p => p.level === selectedPyramidLevel) || pyramidLevels[0];
-                const matchingPlos = plos.filter(plo => plo.bloomLevel === currentData.level);
-                
-                return (
-                  <div className={`p-6 rounded-2xl border transition-all duration-300 ${currentData.activeColorClass} shadow-sm space-y-4`}>
-                    <div className="flex justify-between items-start border-b border-slate-200/40 pb-3">
-                      <div>
-                        <span className={`text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border ${currentData.badgeColor}`}>
-                          Cognitive Level {6 - bloomLevels.indexOf(currentData.level)} of 6
-                        </span>
-                        <h4 className="text-xl font-black tracking-tight mt-1.5 text-slate-800">{currentData.level}</h4>
-                      </div>
-                    </div>
-
-                    <div className="space-y-3.5">
-                      <div>
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono block">Cognitive Definition</span>
-                        <p className="text-xs text-slate-700 leading-relaxed font-medium mt-1">
-                          {currentData.desc}
-                        </p>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-slate-200/40">
-                        <div>
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono block">Action Verbs List</span>
-                          <p className="text-xs text-slate-800 font-bold leading-relaxed mt-1">
-                            {currentData.verbs}
-                          </p>
-                        </div>
-                        <div>
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono block">Learning Objective Example</span>
-                          <p className="text-xs text-slate-600 italic mt-1 leading-relaxed">
-                            "{currentData.example}"
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Matching PLOs List */}
-                      <div className="pt-3 border-t border-slate-200/40">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono block mb-2">
-                          Program Learning Outcomes mapped to this level ({matchingPlos.length})
-                        </span>
-                        
-                        {matchingPlos.length === 0 ? (
-                          <div className="text-center py-4 bg-white/50 border border-dashed border-slate-200 rounded-xl text-xs text-slate-400 italic">
-                            No PLOs are currently mapped to the {currentData.level} level.
-                          </div>
-                        ) : (
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
-                            {matchingPlos.map(plo => (
-                              <button
-                                key={plo.id}
-                                onClick={() => {
-                                  const card = document.getElementById(`plo-card-${plo.id}`);
-                                  if (card) {
-                                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                    card.classList.add('ring-2', 'ring-blue-500');
-                                    setTimeout(() => card.classList.remove('ring-2', 'ring-blue-500'), 2000);
-                                  }
-                                }}
-                                className="bg-white border border-slate-200/80 hover:border-slate-300 p-2.5 rounded-xl text-left transition hover:shadow-sm flex flex-col justify-between h-full group"
-                              >
-                                <div className="space-y-1">
-                                  <div className="flex justify-between items-center">
-                                    <span className="text-[9px] font-bold font-mono text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-100">{plo.id}</span>
-                                    {plo.shortNotation && (
-                                      <span className="text-[9px] font-mono text-slate-500 truncate max-w-[120px]">{plo.shortNotation}</span>
-                                    )}
-                                  </div>
-                                  <p className="text-[11px] text-slate-700 font-semibold line-clamp-2 group-hover:text-blue-600 transition-colors">
-                                    {plo.verb} {plo.text}
-                                  </p>
-                                </div>
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                    </div>
-                  </div>
-                );
-              })()}
             </div>
           </div>
         </div>
